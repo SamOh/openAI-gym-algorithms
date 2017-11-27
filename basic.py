@@ -1,5 +1,5 @@
 import gym
-import universe
+import random
 
 """
 Maximize your score in the Atari 2600 game SpaceInvaders. In this environment,
@@ -8,14 +8,18 @@ Each action is repeatedly performed for a duration of k frames, where k is
 uniformly sampled from {2,3,4}.
 """
 
-env = gym.make('gym-core.SpaceInvaders-v0')
-env.configure(remotes=1)
-observation_n = env.reset()
-
-print "\nSTART OBS is {}\n".format(observation_n)
+env = gym.make('SpaceInvaders-v0')
+state = env.reset()
+episodes = 0
+rewards = 0
 
 while True:
-    action_n = [[('KeyEvent', 'ArrowUp', True)] for ob in observation_n]
-    observation_n, reward_n, done_n, info = env.step(action_n)
-    print "\nOBS is {}\n".format(observation_n)
-env.render()
+  actions = [i for i in range(env.action_space.n)]
+  state, reward, done, info = env.step(random.choice(actions))
+  if done:
+    break
+  episodes += 1
+  rewards += reward
+
+print 'there were {} episodes'.format(episodes)
+print 'there was {} rewards'.format(rewards)

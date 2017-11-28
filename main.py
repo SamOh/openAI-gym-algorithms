@@ -1,21 +1,20 @@
 import gym
 import os
-import learningAgents
+import utils
+from learningAgents import HillClimbingAgent, SimulatedAnnealingAgent
 
 ### User Params ###
 
 # The name of the game to solve
 game_name = 'SpaceInvaders-ram-v0'
+number_iterations = 100
+number_trials = 5
+# 6 is for space invaders. Check the number potential for each game by printing action_space
+number_potential_actions = 6
 
 ### End User Params ###
 
-
-# Instantiate the different classes in learning Agents here and run the training at the bottom after making env
-
-
-
-
-env = gym.make(game_name)
+hc_agent = HillClimbingAgent(game_name, number_iterations, number_potential_actions)
 
 # train agent here and save results of the best
-train_agent(env)
+print(hc_agent.train_agent())

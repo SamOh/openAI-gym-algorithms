@@ -21,5 +21,6 @@ while True:
   episodes += 1
   rewards += reward
 
-print 'there were {} episodes'.format(episodes)
-print 'there was {} rewards'.format(rewards)
+
+print ('there were {} episodes'.format(episodes))
+print ('there was {} rewards'.format(rewards))

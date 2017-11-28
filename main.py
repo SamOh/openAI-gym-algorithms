@@ -6,8 +6,8 @@ from learningAgents import HillClimbingAgent, SimulatedAnnealingAgent
 ### User Params ###
 
 # The name of the game to solve
-game_name = 'SpaceInvaders-ram-v0'
-number_iterations = 100
+game_name = 'SpaceInvaders-v0'
+number_iterations = 10
 number_trials = 5
 # 6 is for space invaders. Check the number potential for each game by printing action_space
 number_potential_actions = 6

@@ -2,6 +2,7 @@ import gym
 import os
 import random
 import numpy as np
+import copy
 
 """
 General class to inherit for other learning algo classes
@@ -35,7 +36,8 @@ class HillClimbingAgent(Agent):
         best_reward, best_obs, best_done, best_info = 0, None, None, None
 
         for action in range(self.num_actions):
-            observation, reward, done, info = env.step(action)
+            copy_env = copy.deepcopy(env)
+            observation, reward, done, info = copy_env.step(action)
             if reward > best_reward:
                 best_reward = reward
                 best_obs = observation

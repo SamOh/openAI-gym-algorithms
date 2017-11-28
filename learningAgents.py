@@ -18,6 +18,43 @@ class Agent:
         """
         pass
 
+"""
+Random Agent to compare with (takes random actions)
+"""
+class RandomAgent(Agent):
+    def __init__(self, game_name, iterations, num_actions):
+        self.env = gym.make(game_name)
+        self.iterations = iterations
+        self.totalreward = 0
+        self.observation = self.env.reset()
+        self.num_actions = num_actions
+
+    def random_action(self, env):
+        observation = env.reset()
+        total_reward = 0
+
+        # iterate through specified range and add up the total reward
+        for _ in range(self.iterations):
+            observation, reward, done, info = self.env.step(self.env.action_space.sample())
+            total_reward += reward
+            if done:
+                break
+
+        return total_reward
+
+    def train_agent(self):
+        best_reward = 0
+        self.env.render()
+
+        for _ in range(self.iterations):
+            reward = self.random_action(self.env)
+
+            if reward > best_reward:
+                best_reward = reward
+
+        return best_reward
+
+
 
 """
 Basic Greedy hill climbing agent
@@ -27,7 +64,6 @@ class HillClimbingAgent(Agent):
         self.env = gym.make(game_name)
         self.iterations = iterations
         self.totalreward = 0
-        self.counter = 0
         self.observation = self.env.reset()
         self.num_actions = num_actions
 

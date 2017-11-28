@@ -59,6 +59,7 @@ class HillClimbingAgent(Agent):
 
     def train_agent(self):
         best_reward = 0
+        self.env.render()
 
         for _ in range(self.iterations):
             reward = self.hill_climbing(self.env)

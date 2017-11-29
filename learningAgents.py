@@ -23,37 +23,20 @@ class Agent:
 Random Agent to compare with (takes random actions)
 """
 class RandomAgent(Agent):
-    def __init__(self, game_name, iterations, num_actions):
+    def __init__(self, game_name):
         self.env = gym.make(game_name)
-        self.iterations = iterations
-        self.totalreward = 0
-        self.observation = self.env.reset()
-        self.num_actions = num_actions
-
-    def random_action(self, env):
-        observation = env.reset()
-        total_reward = 0
-
-        # iterate through specified range and add up the total reward
-        for _ in range(self.iterations):
-            observation, reward, done, info = self.env.step(self.env.action_space.sample())
-            total_reward += reward
-            if done:
-                break
-
-        return total_reward
 
     def train_agent(self):
-        best_reward = 0
+        return
 
-        for _ in range(self.iterations):
-            self.env.render()
-            reward = self.random_action(self.env)
+    def test_agent(self):
+        print 'testing RandomAgent...'
+        self.env.reset()
+        done, episode_rewards = False, 0
+        while done == False:
+            _, reward, done, _ = self.env.step(self.env.action_space.sample())
+        print 'testing episode gained {} rewards'.format(episode_rewards)
 
-            if reward > best_reward:
-                best_reward = reward
-
-        return best_reward
 
 """
 Agent for Temportal Difference Learning
@@ -96,6 +79,7 @@ class TDLearningAgent(Agent):
           self.alpha * (reward + self.gamma * self.getValue(nextState))
 
     def train_agent(self):
+        print 'training TDLearningAgent with {} iterations...'.format(self.iterations)
         for episode in range(self.iterations):
             episode_rewards = 0
             done, prevObs = False, self.env.reset()
@@ -105,9 +89,10 @@ class TDLearningAgent(Agent):
                 self.updateQValues(prevObs, action, obs, reward)
                 prevObs = obs
                 episode_rewards += reward
-            print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
+            #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
     def test_agent(self):
+        print 'testing TDLearningAgent...'
         episode_rewards = 0
         done, obs = False, self.env.reset()
         while done == False:

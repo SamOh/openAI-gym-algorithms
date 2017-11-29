@@ -1,7 +1,7 @@
 import gym
 import os
 import utils
-from learningAgents import HillClimbingAgent, SimulatedAnnealingAgent, RandomAgent
+from learningAgents import RandomAgent
 
 ### User Params ###
 
@@ -19,5 +19,4 @@ number_potential_actions = 6
 random_agent = RandomAgent(game_name, number_iterations, number_potential_actions)
 
 # train agent here and save results of the best
-# print(hc_agent.train_agent())
 print(random_agent.train_agent())

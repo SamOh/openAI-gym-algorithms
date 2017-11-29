@@ -10,17 +10,15 @@ uniformly sampled from {2,3,4}.
 
 env = gym.make('SpaceInvaders-v0')
 state = env.reset()
-episodes = 0
+steps = 0
 rewards = 0
 
 while True:
-  actions = [i for i in range(env.action_space.n)]
-  state, reward, done, info = env.step(random.choice(actions))
+  state, reward, done, info = env.step(env.action_space.sample())
   if done:
+    print info
     break
-  episodes += 1
+  steps += 1
   rewards += reward
 
-
-print ('there were {} episodes'.format(episodes))
-print ('there was {} rewards'.format(rewards))
+print 'game ended with {} rewards in {} steps'.format(total_rewards, steps)

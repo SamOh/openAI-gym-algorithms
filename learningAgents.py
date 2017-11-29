@@ -32,10 +32,15 @@ class RandomAgent(Agent):
     def random_action(self, env):
         observation = env.reset()
         total_reward = 0
+        # print(observation)
 
         # iterate through specified range and add up the total reward
         for _ in range(self.iterations):
-            observation, reward, done, info = self.env.step(self.env.action_space.sample())
+            action = self.env.action_space.sample()
+            # print(action)
+            observation, reward, done, info = self.env.step(action)
+            # print(info)
+            # print(reward)
             total_reward += reward
             if done:
                 break
@@ -44,11 +49,11 @@ class RandomAgent(Agent):
 
     def train_agent(self):
         best_reward = 0
-        self.env.render()
+        
 
         for _ in range(self.iterations):
+            self.env.render()
             reward = self.random_action(self.env)
-
             if reward > best_reward:
                 best_reward = reward
 

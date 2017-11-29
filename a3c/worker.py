@@ -98,7 +98,6 @@ class Worker():
                     gym_rewards += r
                     if r == 0.0:
                         r -= 0.3
-                    r /= 30.0
 
                     if d == False: # not done
                         episode_frames.append(s)
@@ -108,7 +107,9 @@ class Worker():
                         print 'total rewards gained was {}'.format(gym_rewards)
                         s1 = s
                         s = process_frame(s)
+                        # r -= 5 # add penalty for losing
 
+                    r /= 30.0
                     episode_buffer.append([s,a,r,s1,d,v[0,0]])
                     episode_values.append(v[0,0])
 

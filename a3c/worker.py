@@ -95,16 +95,17 @@ class Worker():
 
                     s, r, d, _ = self.env.step(self.actions[a])
                     if r == 0.0:
-                        r -= 1
+                        r -= 1.0
                     r /= 30.0
 
                     if d == False: # not done
                         episode_frames.append(s)
                         s1 = process_frame(s)
+                        s = s1
                     else:
                         s1 = s
+                        s = process_frame(s)
 
-                    s = process_frame(s)
                     episode_buffer.append([s,a,r,s1,d,v[0,0]])
                     episode_values.append(v[0,0])
 

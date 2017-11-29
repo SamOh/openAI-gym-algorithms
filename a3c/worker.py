@@ -76,6 +76,7 @@ class Worker():
                 episode_reward = 0
                 episode_step_count = 0
                 d = False
+                gym_rewards = 0
 
                 s = self.env.reset()
                 episode_frames.append(s)
@@ -94,8 +95,9 @@ class Worker():
                     a = np.argmax(a_dist == a)
 
                     s, r, d, _ = self.env.step(self.actions[a])
+                    gym_rewards += r
                     if r == 0.0:
-                        r -= 1.0
+                        r -= 0.3
                     r /= 30.0
 
                     if d == False: # not done
@@ -103,6 +105,7 @@ class Worker():
                         s1 = process_frame(s)
                         s = s1
                     else:
+                        print 'total rewards gained was {}'.format(gym_rewards)
                         s1 = s
                         s = process_frame(s)
 

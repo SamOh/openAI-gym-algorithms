@@ -29,6 +29,7 @@ with tf.Session() as sess:
   s = env.reset()
   s = process_frame(s)
   d, total_rewards, steps, max_reward = False, 0, 0, 0
+  env.render()
 
   while not d:
     a_dist,v,rnn_state = sess.run([master_network.policy,master_network.value,master_network.state_out],

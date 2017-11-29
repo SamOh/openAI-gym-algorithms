@@ -3,6 +3,7 @@ import os
 import random
 import numpy as np
 import copy
+import utils
 
 """
 General class to inherit for other learning algo classes
@@ -22,13 +23,35 @@ class Agent:
 Random Agent to compare with (takes random actions)
 """
 class RandomAgent(Agent):
-    def __init__(self, game_name, iterations, num_actions):
+    def __init__(self, game_name):
         self.env = gym.make(game_name)
-        self.iterations = iterations
-        self.totalreward = 0
-        self.observation = self.env.reset()
-        self.num_actions = num_actions
 
+    def train_agent(self):
+        return
+
+    def test_agent(self):
+        print 'testing RandomAgent...'
+        self.env.reset()
+        done, episode_rewards = False, 0
+        while done == False:
+            _, reward, done, _ = self.env.step(self.env.action_space.sample())
+        print 'testing episode gained {} rewards'.format(episode_rewards)
+
+
+"""
+Agent for Temportal Difference Learning
+"""
+class TDLearningAgent(Agent):
+    def __init__(self, game_name, iterations, epsilon, gamma, alpha):
+        self.env = gym.make(game_name)
+        self.epsilon = epsilon
+        self.gamma = gamma
+        self.alpha = alpha
+        self.iterations = iterations
+        self.QValues = utils.Counter()
+        self.actions = [i for i in range(self.env.action_space.n)]
+
+<<<<<<< HEAD
     def random_action(self, env):
         observation = env.reset()
         total_reward = 0
@@ -44,20 +67,81 @@ class RandomAgent(Agent):
             total_reward += reward
             if done:
                 break
+=======
+    def getQValue(self, state, action):
+        return self.QValues[state, action]
 
-        return total_reward
+    def getValue(self, state):
+        maxQValue = None
+        for action in self.actions:
+          QValue = self.getQValue(state, action)
+          if maxQValue < QValue:
+            maxQValue = QValue
+        return 0 if maxQValue is None else maxQValue
+>>>>>>> 166aec55b03cfa14bbc8a4bcabe8c5321c61d090
 
-    def train_agent(self):
-        best_reward = 0
+    def getPolicy(self, state):
+        maxQValue, maxAction = None, None
+        for action in self.actions:
+          QValue = self.getQValue(state, action)
+          if maxQValue < QValue:
+            maxQValue = QValue
+            maxAction = action
+        return maxAction
 
+    def epsilonGreedyAction(self, state):
+        return random.choice(self.actions) if utils.flipCoin(self.epsilon) else self.getPolicy(state)
+
+    def updateQValues(self, state, action, nextState, reward):
+        self.QValues[state, action] = (1 - self.alpha) * self.QValues[state, action] + \
+          self.alpha * (reward + self.gamma * self.getValue(nextState))
+
+<<<<<<< HEAD
         for _ in range(self.iterations):
             self.env.render()
             reward = self.random_action(self.env)
             if reward > best_reward:
                 best_reward = reward
+=======
+    def train_agent(self):
+        print 'training TDLearningAgent with {} iterations...'.format(self.iterations)
+        for episode in range(self.iterations):
+            episode_rewards = 0
+            done, prevObs = False, self.env.reset()
+            while done == False:
+                action = self.epsilonGreedyAction(prevObs)
+                obs, reward, done, _ = self.env.step(action)
+                self.updateQValues(prevObs, action, obs, reward)
+                prevObs = obs
+                episode_rewards += reward
+            #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
-        return best_reward
+    def test_agent(self):
+        print 'testing TDLearningAgent...'
+        episode_rewards = 0
+        done, obs = False, self.env.reset()
+        while done == False:
+            action = self.getPolicy(obs)
+            obs, reward, done, _ = self.env.step(action)
+            episode_rewards += reward
+        print 'testing episode gained {} rewards'.format(episode_rewards)
+>>>>>>> 166aec55b03cfa14bbc8a4bcabe8c5321c61d090
 
+"""
+TODO
+"""
+class MonteCarloAgent(Agent):
+    def __init__(self, game_name, iterations, epsilon, gamma, alpha):
+        self.env = gym.make(game_name)
+        self.epsilon = epsilon
+        self.gamma = gamma
+        self.alpha = alpha
+        self.iterations = iterations
+        self.QValues = utils.Counter()
+        self.actions = [i for i in range(self.env.action_space.n)]
+
+    def train_agent(self):
+        return
 
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)

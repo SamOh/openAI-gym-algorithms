@@ -1,3 +1,4 @@
 *.pyc
 *.DS_Store
-a3c/
+a3c/train*
+a3c/model

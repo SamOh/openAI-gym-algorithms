@@ -18,5 +18,5 @@ hc_agent = HillClimbingAgent(game_name, number_iterations, number_potential_acti
 random_agent = RandomAgent(game_name, number_iterations, number_potential_actions)
 
 # train agent here and save results of the best
-# print(hc_agent.train_agent())
+print(hc_agent.train_agent())
 print(random_agent.train_agent())

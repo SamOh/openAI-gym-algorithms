@@ -22,11 +22,8 @@ def preprocess(observation):
 
 def process_frame(observation):
     frame = preprocess(observation)
-
     s = np.reshape(frame,[np.prod(frame.shape)]) / 255.0
     return s
-
-    # returning something of shape (84, 84, 1), but want something of shape (120, 160)
 
 # Discounting function used to calculate discounted returns.
 def discount(x, gamma):

@@ -2,6 +2,7 @@ from helpers import *
 from time import sleep
 import random
 from a3c import *
+import os
 
 """
 Class for training a worker in our Actor-Critic network
@@ -75,7 +76,7 @@ class Worker():
                 episode_frames = []
                 episode_reward = 0
                 episode_step_count = 0
-                d = False
+                d, currentLives = False, 3
                 gym_rewards = 0
 
                 s = self.env.reset()
@@ -84,7 +85,7 @@ class Worker():
 
                 rnn_state = self.local_AC.state_init
                 self.batch_rnn_state = rnn_state
-                while d == False:
+                while not d:
 
                     # Take an action using probabilities from policy network output.
                     a_dist,v,rnn_state = sess.run([self.local_AC.policy,self.local_AC.value,self.local_AC.state_out],
@@ -94,10 +95,16 @@ class Worker():
                     a = np.random.choice(a_dist[0],p=a_dist[0])
                     a = np.argmax(a_dist == a)
 
-                    s, r, d, _ = self.env.step(self.actions[a])
+                    s, r, d, info = self.env.step(self.actions[a])
+                    livesLeft = info['ale.lives']
                     gym_rewards += r
-                    if r == 0.0:
+
+                    if r == 0.0: # penalize not doing anything
                         r -= 0.3
+                    if currentLives - livesLeft != 0: # penalize losing a life
+                        r -= 1.8
+                        currentLives = livesLeft
+                    r /= 30.0
 
                     if d == False: # not done
                         episode_frames.append(s)
@@ -107,13 +114,11 @@ class Worker():
                         print 'total rewards gained was {}'.format(gym_rewards)
                         s1 = s
                         s = process_frame(s)
-                        # r -= 5 # add penalty for losing
 
-                    r /= 30.0
+                    episode_reward += r
                     episode_buffer.append([s,a,r,s1,d,v[0,0]])
                     episode_values.append(v[0,0])
 
-                    episode_reward += r
                     s = s1
                     total_steps += 1
                     episode_step_count += 1
@@ -149,9 +154,20 @@ class Worker():
                     #     images = np.array(episode_frames)
                     #     make_gif(images,'./frames/image'+str(episode_count)+'.gif',
                     #         duration=len(images)*time_per_step,true_image=True,salience=False)
-                    if episode_count % 250 == 0 and self.name == 'worker_0':
-                        saver.save(sess,self.model_path+'/model-'+str(episode_count)+'.cptk')
-                        print ("Saved Model")
+
+                    if episode_count % 250 == 0:
+
+                        reward_path = './rewards'
+                        if not os.path.exists(reward_path):
+                            os.makedirs(reward_path)
+                        with open('./rewards/worker{}.txt'.format(self.number), 'w') as file:
+                            file.writelines(["%s\n" % item for item in self.episode_rewards])
+
+                        if self.name == 'worker_0':
+                            # save learned model
+                            saver.save(sess,self.model_path+'/model-'+str(episode_count)+'.cptk')
+                            print ("Saved Model")
+                            # save graph of learned rewards
 
                     mean_reward = np.mean(self.episode_rewards[-5:])
                     mean_length = np.mean(self.episode_lengths[-5:])

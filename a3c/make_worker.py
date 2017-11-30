@@ -42,7 +42,7 @@ with tf.device("/cpu:0"):
 
 with tf.Session() as sess:
     coord = tf.train.Coordinator()
-    if load_model == True:
+    if load_model:
         print ('Loading Model...')
         ckpt = tf.train.get_checkpoint_state(model_path)
         saver.restore(sess,ckpt.model_checkpoint_path)

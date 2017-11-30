@@ -33,7 +33,7 @@ class RandomAgent(Agent):
         print 'testing RandomAgent...'
         self.env.reset()
         done, episode_rewards = False, 0
-        while done == False:
+        while not done:
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
         print 'testing episode gained {} rewards'.format(episode_rewards)
 
@@ -83,7 +83,7 @@ class TDLearningAgent(Agent):
         for episode in range(self.iterations):
             episode_rewards = 0
             done, prevObs = False, self.env.reset()
-            while done == False:
+            while not done:
                 action = self.epsilonGreedyAction(prevObs)
                 obs, reward, done, _ = self.env.step(action)
                 self.updateQValues(prevObs, action, obs, reward)
@@ -95,7 +95,7 @@ class TDLearningAgent(Agent):
         print 'testing TDLearningAgent...'
         episode_rewards = 0
         done, obs = False, self.env.reset()
-        while done == False:
+        while not done:
             action = self.getPolicy(obs)
             obs, reward, done, _ = self.env.step(action)
             episode_rewards += reward

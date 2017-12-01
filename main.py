@@ -5,7 +5,7 @@ from learningAgents import *
 ### User Params ###
 
 game_name = 'FrozenLake-v0'
-number_iterations = 10000
+number_iterations = 1
 epsilon = 0.15
 gamma = 0.9
 alpha = 0.1

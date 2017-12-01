@@ -1,7 +1,8 @@
 import gym
 import os
 import random
-import numpy as np
+import numpy
+import tensorflow
 import copy
 import utils
 
@@ -117,15 +118,69 @@ class MonteCarloAgent(Agent):
     def train_agent(self):
         return
 
-"""
-Basic Estimated QLearning (RL2 last thing scott talked about)
-"""
-class ApproxamiteQLearningAgent(Agent):
-    def __init__(self, game_name, iterations):
-        # instantiate Q values
-        pass
+class DiscreteInputBasicQLearning(Agent):
+    pass
+    # for episode in range(self.episodes):
+    #     self.observation = self.env.reset()
+    #     done = False
+    #     total_reward, reward = 0,0
 
-    def train_agent(env):
-        # do the training of the agent here
-        pass
+    #     action = numpy.argmax(self.Q[self.observation])
+
+    #     observation, reward, done, info = self.env.step(self.env.action_space.sample())
+    #     Q[self.observation, action] += alpha * (reward + gamma * (numpy.max(Q[observation] - Q[self.observation, action])))
+    #     self.observation = observation
+    #     total_reward += reward
+
+
+"""
+QLearning agent (RL2 last thing scott talked about)
+"""
+class DeepQLearningAgent(Agent):
+    def __init__(self, game_name, episodes):
+
+        self.env = gym.make(game_name)
+        self.episodes = episodes
+        self.observation = self.env.reset()
+        # number 7056 comes from image which is a 84x84x1 color image
+        self.scalarInput = tensorflow.placeholder(shape=[None, 7056], dtype=tf.float32)
+        self.imageIn = tensorflow.reshpae(self.scalarInput, shape=[-1,84,84,2])
+
+        # create 4 layers of the convolutional neural network
+        conv1 = slim.conv2d( \
+            inputs=imageIn,num_outputs=32,kernel_size=[8,8],stride=[4,4],padding='VALID', biases_initializer=None)
+        conv2 = slim.conv2d( \
+            inputs=conv1,num_outputs=64,kernel_size=[4,4],stride=[2,2],padding='VALID', biases_initializer=None)
+        conv3 = slim.conv2d( \
+            inputs=conv2,num_outputs=64,kernel_size=[3,3],stride=[1,1],padding='VALID', biases_initializer=None)
+        conv4 = slim.conv2d( \
+            inputs=conv3,num_outputs=512,kernel_size=[7,7],stride=[1,1],padding='VALID', biases_initializer=None)
+
+        # Take the output from the final convolutional layer and split it into separate advantage and value streams.
+        streamAC,streamVC = tensorflow.split(conv4,2,3)
+        streamA = slim.flatten(streamAC)
+        streamV = slim.flatten(streamVC)
+        xavier_init = tensorflow.contrib.layers.xavier_initializer()
+        AW = tensorflow.Variable(xavier_init([h_size//2,env.actions]))
+        VW = tensorflow.Variable(xavier_init([h_size//2,1]))
+        Advantage = tensorflow.matmul(streamA,AW)
+        Value = tensorflow.matmul(streamV,VW)
+
+        # Combine them together to get our final Q-values
+        self.Qout = self.Value + tensorflow.subtract(self.Advantage,tensorflow.reduce_mean(self.Advantage,axis=1,keep_dims=True))
+        self.predict = tensorflow.argmax(self.Qout,1)
+
+        # We obtain the loss by taking the sum of squares difference between the target and prediction Q values.
+        self.targetQ = tensorflow.placeholder(shape=[None],dtype=tensorflow.float32)
+        self.actions = tensorflow.placeholder(shape=[None],dtype=tensorflow.int32)
+        self.actions_onehot = tensorflow.one_hot(self.actions,env.actions,dtype=tensorflow.float32)
+
+        self.Q = tensorflow.reduce_sum(tensorflow.multiply(self.Qout, self.actions_onehot), axis=1)
+
+        self.loss = tensorflow.reduce_mean(tensorflow.square(self.targetQ - self.Q))
+        self.trainer = tensorflow.train.AdamOptimizer(learning_rate=0.0001)
+        self.updateModel = self.trainer.minimize(self.loss)
+
+    def train_agent(self):
+        init = tf.initialize_all_variables()
 

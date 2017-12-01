@@ -1,12 +1,30 @@
-import sys
 import gym
-import universe
+import random
+import cv2
 
-env = gym.make('gym-core.SpaceInvaders-v0')
-env.configure(remotes=1)
-observation_n = env.reset()
+"""
+Maximize your score in the Atari 2600 game SpaceInvaders. In this environment,
+the observation is an RGB image of the screen, which is an array of shape (210, 160, 3).
+Each action is repeatedly performed for a duration of k frames, where k is
+uniformly sampled from {2,3,4}.
+"""
+
+env = gym.make('FrozenLake-v0')
+obs = env.reset()
+print obs
+env.render()
+rewards, steps = 0, 0
 
 while True:
-    action_n = [[('KeyEvent', 'ArrowUp', True)] for ob in observation_n]
-    observation_n, reward_n, done_n, info = env.step(action_n)
-env.render()
+  obs, r, d, info = env.step(env.action_space.sample())
+  print obs
+  env.render()
+
+  if d:
+    print('done and info is {}'.format(info))
+    break
+  steps += 1
+  rewards += r
+
+print 'game ended with {} rewards in {} steps'.format(rewards, steps)
+

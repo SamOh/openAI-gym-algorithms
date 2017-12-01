@@ -1,42 +1,22 @@
 import gym
 import utils
-from learningAgents import *
+from learningAgents import * 
 
 ### User Params ###
 
-# The name of the game to solve
-# <<<<<<< HEAD
-# game_name = 'SpaceInvaders-v0'
-# number_iterations = 100
-# number_trials = 1
-# # 6 is for space invaders. Check the number potential for each game by printing action_space
-# number_potential_actions = 6
-# =======
-game_name = 'MountainCarContinuous-v0'
-number_iterations = 2000
+game_name = 'FrozenLake-v0'
+number_iterations = 10000
 epsilon = 0.15
 gamma = 0.9
 alpha = 0.1
-# >>>>>>> 166aec55b03cfa14bbc8a4bcabe8c5321c61d090
 
 
-<<<<<<< HEAD
-### End User Params ###
 
-# tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
-# tdl_agent.train_agent()
-# tdl_agent.test_agent()
 
-random_agent = RandomAgent(game_name)
-random_agent.test_agent()
-
-# # train agent here and save results of the best
-# print(random_agent.train_agent())
-=======
 tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
 tdl_agent.train_agent()
-tdl_agent.test_agent()
+tdl_agent.test_frozen_lake()
 
 # random_agent = RandomAgent(game_name)
 # random_agent.test_agent()
->>>>>>> 50c1b64a22297e0d40d2be8a10af7dee746892f3
+

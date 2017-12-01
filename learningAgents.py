@@ -1,7 +1,7 @@
 import gym
 import random
 import utils
-from taxi import solveTaxi
+from taxiSearch import solveTaxi
 
 """
 General class to inherit for other learning algo classes
@@ -31,12 +31,8 @@ class RandomAgent(object):
         print 'testing RandomAgent...'
         self.env.reset()
         done, episode_rewards = False, 0
-<<<<<<< HEAD
-        while done == False:
-            self.env.render()
-=======
+
         while not done:
->>>>>>> 50c1b64a22297e0d40d2be8a10af7dee746892f3
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
             episode_rewards += reward
         print 'testing episode gained {} rewards'.format(episode_rewards)
@@ -114,7 +110,33 @@ class TDLearningAgent(LearningAgent):
                 episode_rewards += reward
             #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
-    def test_agent(self):
+
+    def test_frozen_lake(self):
+        print 'testing TDLearningAgent...'
+        rewards, iterations = 0, 1
+        for _ in range(iterations):
+            obs, done = self.env.reset(), False
+            while not done:
+                action = self.getPolicy(obs)
+                obs, reward, done, info = self.env.step(action)
+                rewards += reward
+                print reward
+                print info
+
+
+        if rewards / float(iterations) > 0.78:
+            print 'Tests passed.'
+        a = rewards / float(iterations)
+        print "Average Rewards:", a
+        print "rewards:", rewards
+
+
+        ## Create a model. Find the probability
+        ## that it moves in the right direction.
+
+
+
+    def test_taxi(self):
         print 'testing TDLearningAgent...'
         passed = 0
         for _ in range(self.iterations):
@@ -153,7 +175,7 @@ class MonteCarloAgent(LearningAgent):
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)
 """
-class ApproximateQLearningAgent(Agent):
+class ApproximateQLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations):
         # instantiate Q values
         pass

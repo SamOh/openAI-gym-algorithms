@@ -1,5 +1,6 @@
 import gym
 import random
+import cv2
 
 """
 Maximize your score in the Atari 2600 game SpaceInvaders. In this environment,
@@ -8,18 +9,17 @@ Each action is repeatedly performed for a duration of k frames, where k is
 uniformly sampled from {2,3,4}.
 """
 
-env = gym.make('SpaceInvaders-v0')
-state = env.reset()
-steps = 0
-rewards = 0
+env = gym.make('Taxi-v2')
 
 while True:
-  state, reward, done, info = env.step(env.action_space.sample())
-  print info
-  if done:
-    print 'done and info is {}'.format(info)
+  s, r, d, info = env.step(env.action_space.sample())
+  env.render()
+
+  if d:
+    print('done and info is {}'.format(info))
     break
   steps += 1
-  rewards += reward
+  rewards += r
 
 print 'game ended with {} rewards in {} steps'.format(rewards, steps)
+

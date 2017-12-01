@@ -149,10 +149,12 @@ def solveTaxi(obs):
 
 if __name__ == "__main__":
   env = gym.make('Taxi-v2')
-  correct, iterations = 0, 1000
+  correct, iterations = 0, 1
   print "Checking accuracy with {} iterations...".format(iterations)
   for _ in range(iterations):
     obs = env.reset()
+    print obs
+    env.render()
     actions = solveTaxi(obs)
     for action in actions:
       obs, _, done, _ = env.step(action)

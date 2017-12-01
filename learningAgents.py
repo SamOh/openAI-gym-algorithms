@@ -1,48 +1,51 @@
 import gym
-import os
 import random
-import numpy as np
-import copy
 import utils
+from taxi import solveTaxi
 
 """
 General class to inherit for other learning algo classes
 """
-class Agent:
+class LearningAgent:
     def __init__(self):
         pass
 
-    def train_agent(self, env):
+    def train_agent(self):
         """
         All agents must have a training component that trains the agent to learn how to play
         the game based on which algorithm is being used
         """
         pass
 
+    def test_agent(self):
+        pass
+
 """
 Random Agent to compare with (takes random actions)
 """
-class RandomAgent(Agent):
+class RandomAgent(object):
     def __init__(self, game_name):
         self.env = gym.make(game_name)
-
-    def train_agent(self):
-        return
 
     def test_agent(self):
         print 'testing RandomAgent...'
         self.env.reset()
         done, episode_rewards = False, 0
+<<<<<<< HEAD
         while done == False:
             self.env.render()
+=======
+        while not done:
+>>>>>>> 50c1b64a22297e0d40d2be8a10af7dee746892f3
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
+            episode_rewards += reward
         print 'testing episode gained {} rewards'.format(episode_rewards)
 
 
 """
-Agent for Temportal Difference Learning
+Agent for Temporal Difference Learning
 """
-class TDLearningAgent(Agent):
+class TDLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon
@@ -103,7 +106,7 @@ class TDLearningAgent(Agent):
         for episode in range(self.iterations):
             episode_rewards = 0
             done, prevObs = False, self.env.reset()
-            while done == False:
+            while not done:
                 action = self.epsilonGreedyAction(prevObs)
                 obs, reward, done, _ = self.env.step(action)
                 self.updateQValues(prevObs, action, obs, reward)
@@ -113,18 +116,28 @@ class TDLearningAgent(Agent):
 
     def test_agent(self):
         print 'testing TDLearningAgent...'
-        episode_rewards = 0
-        done, obs = False, self.env.reset()
-        while done == False:
-            action = self.getPolicy(obs)
-            obs, reward, done, _ = self.env.step(action)
-            episode_rewards += reward
-        print 'testing episode gained {} rewards'.format(episode_rewards)
+        passed = 0
+        for _ in range(self.iterations):
+            obs, done, actions = self.env.reset(), False, []
+            optimalActions = solveTaxi(obs)
+            while not done:
+                action = self.getPolicy(obs)
+                actions.append(action)
+                obs, _, done, _ = self.env.step(action)
+                if len(actions) > len(optimalActions):
+                    break
+            if done:
+                if len(actions) == len(optimalActions):
+                    passed += 1
+                if len(actions) < len(optimalActions):
+                    print "This is impossible!"
+        print '{}% of tests passed optimally'.format(passed * 100.0 / self.iterations)
+
 
 """
 TODO
 """
-class MonteCarloAgent(Agent):
+class MonteCarloAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon
@@ -140,7 +153,7 @@ class MonteCarloAgent(Agent):
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)
 """
-class ApproxamiteQLearningAgent(Agent):
+class ApproximateQLearningAgent(Agent):
     def __init__(self, game_name, iterations):
         # instantiate Q values
         pass

@@ -1,5 +1,4 @@
 import gym
-import os
 import utils
 from learningAgents import *
 
@@ -15,12 +14,13 @@ from learningAgents import *
 # =======
 game_name = 'MountainCarContinuous-v0'
 number_iterations = 2000
-epsilon = 0.08
-gamma = 0.85
+epsilon = 0.15
+gamma = 0.9
 alpha = 0.1
 # >>>>>>> 166aec55b03cfa14bbc8a4bcabe8c5321c61d090
 
 
+<<<<<<< HEAD
 ### End User Params ###
 
 # tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
@@ -32,3 +32,11 @@ random_agent.test_agent()
 
 # # train agent here and save results of the best
 # print(random_agent.train_agent())
+=======
+tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
+tdl_agent.train_agent()
+tdl_agent.test_agent()
+
+# random_agent = RandomAgent(game_name)
+# random_agent.test_agent()
+>>>>>>> 50c1b64a22297e0d40d2be8a10af7dee746892f3

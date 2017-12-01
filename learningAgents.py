@@ -4,6 +4,7 @@ import random
 import numpy as np
 import copy
 import utils
+from taxi import solveTaxi
 
 """
 General class to inherit for other learning algo classes
@@ -35,11 +36,12 @@ class RandomAgent(Agent):
         done, episode_rewards = False, 0
         while not done:
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
+            episode_rewards += reward
         print 'testing episode gained {} rewards'.format(episode_rewards)
 
 
 """
-Agent for Temportal Difference Learning
+Agent for Temporal Difference Learning
 """
 class TDLearningAgent(Agent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
@@ -93,13 +95,23 @@ class TDLearningAgent(Agent):
 
     def test_agent(self):
         print 'testing TDLearningAgent...'
-        episode_rewards = 0
-        done, obs = False, self.env.reset()
-        while not done:
-            action = self.getPolicy(obs)
-            obs, reward, done, _ = self.env.step(action)
-            episode_rewards += reward
-        print 'testing episode gained {} rewards'.format(episode_rewards)
+        passed = 0
+        for _ in range(self.iterations):
+            obs, done, actions = self.env.reset(), False, []
+            optimalActions = solveTaxi(obs)
+            while not done:
+                action = self.getPolicy(obs)
+                actions.append(action)
+                obs, _, done, _ = self.env.step(action)
+                if len(actions) > len(optimalActions):
+                    break
+            if done:
+                if len(actions) == len(optimalActions):
+                    passed += 1
+                if len(actions) < len(optimalActions):
+                    print "This is impossible!"
+        print '{}% of tests passed optimally'.format(passed * 100.0 / self.iterations)
+
 
 """
 TODO
@@ -120,7 +132,7 @@ class MonteCarloAgent(Agent):
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)
 """
-class ApproxamiteQLearningAgent(Agent):
+class ApproximateQLearningAgent(Agent):
     def __init__(self, game_name, iterations):
         # instantiate Q values
         pass

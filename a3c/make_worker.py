@@ -10,7 +10,7 @@ from worker import *
 max_episode_length = 300
 gamma = .99 # discount rate for advantage estimation and reward discounting
 s_size = 7056 # we convert observations to frames of 84 * 84 * 1
-a_size = 6 # action set size of Space Invaders
+a_size = 3 # action set size of Space Invaders
 load_model = False
 model_path = './model'
 

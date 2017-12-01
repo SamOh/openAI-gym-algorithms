@@ -32,7 +32,7 @@ class RandomAgent(Agent):
         return
 
     def test_agent(self):
-        print 'testing RandomAgent...'
+        print('testing RandomAgent...')
         self.env.reset()
         done, episode_rewards = False, 0
         while not done:

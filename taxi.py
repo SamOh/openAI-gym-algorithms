@@ -108,56 +108,60 @@ def aStarSearch(pos, goal):
 """
 computes action sequence starting at X1 and ending at X2
 """
-def computeActionSequence(X1, X2, pos):
-  pickup = aStarSearch(pos, X1)
+def computeActionSequence(X1, X2, pos, strategy):
+  pickup = strategy(pos, X1)
+  print(pickup)
   pickup.append(4)
-  dropoff = aStarSearch(X1, X2)
+  dropoff = strategy(X1, X2)
   dropoff.append(5)
   return pickup + dropoff
 
 """
 solves taxi game based on initial observation
 """
-def solveTaxi(obs):
+def solveTaxi(obs, strategy):
   tens, ones = ((obs % 100) - (obs % 10)) / 10, obs % 10
   G, B, Y, R, pos = (5, 5), (4, 1), (1, 1), (1, 5), getPosition(obs)
 
   if (tens % 2) == 1:
     if ones == 1:
-      return computeActionSequence(Y, B, pos)
+      return computeActionSequence(Y, B, pos, strategy)
     if ones == 2:
-      return computeActionSequence(B, R, pos)
+      return computeActionSequence(B, R, pos, strategy)
     if ones == 3:
-      return computeActionSequence(B, G, pos)
+      return computeActionSequence(B, G, pos, strategy)
     if ones == 4:
-      return computeActionSequence(B, Y, pos)
+      return computeActionSequence(B, Y, pos, strategy)
   else:
     if ones == 1:
-      return computeActionSequence(R, G, pos)
+      return computeActionSequence(R, G, pos, strategy)
     if ones == 2:
-      return computeActionSequence(R, Y, pos)
+      return computeActionSequence(R, Y, pos, strategy)
     if ones == 3:
-      return computeActionSequence(R, B, pos)
+      return computeActionSequence(R, B, pos, strategy)
     if ones == 4:
-      return computeActionSequence(G, R, pos)
+      return computeActionSequence(G, R, pos, strategy)
     if ones == 6:
-      return computeActionSequence(G, Y, pos)
+      return computeActionSequence(G, Y, pos, strategy)
     if ones == 7:
-      return computeActionSequence(G, B, pos)
+      return computeActionSequence(G, B, pos, strategy)
     if ones == 8:
-      return computeActionSequence(Y, R, pos)
+      return computeActionSequence(Y, R, pos, strategy)
     if ones == 9:
-      return computeActionSequence(Y, G, pos)
+      return computeActionSequence(Y, G, pos, strategy)
 
 if __name__ == "__main__":
   env = gym.make('Taxi-v2')
-  correct, iterations = 0, 1000
-  print "Checking accuracy with {} iterations...".format(iterations)
+  correct, iterations = 0, 2
+  strategy = aStarSearch
+  print ("Checking accuracy with " + str(iterations) + " iterations...")
   for _ in range(iterations):
+    print("1")
     obs = env.reset()
-    actions = solveTaxi(obs)
+    actions = solveTaxi(obs, strategy)
     for action in actions:
+      env.render()
       obs, _, done, _ = env.step(action)
     if done:
       correct += 1
-  print '{}% correct'.format(correct*100.0/iterations)
+  print(str(correct*100.0/iterations) + " % correct")

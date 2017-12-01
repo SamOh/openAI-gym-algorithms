@@ -1,15 +1,6 @@
 import gym
 import os
-import utils
-from learningAgents import *
-import tensorflow as tf
 from learningAgents import RandomAgent
-import numpy as np
-import random
-import tensorflow.contrib.slim as slim
-import scipy.misc
-import os
-import itertools
 
 ### User Params ###
 

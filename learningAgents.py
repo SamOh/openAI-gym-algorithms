@@ -1,7 +1,7 @@
 import gym
 import random
 import utils
-from taxi import solveTaxi
+from taxiSearch import solveTaxi
 
 """
 General class to inherit for other learning algo classes
@@ -31,6 +31,7 @@ class RandomAgent(object):
         print 'testing RandomAgent...'
         self.env.reset()
         done, episode_rewards = False, 0
+
         while not done:
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
             episode_rewards += reward
@@ -50,6 +51,24 @@ class TDLearningAgent(LearningAgent):
         self.QValues = utils.Counter()
         self.actions = [i for i in range(self.env.action_space.n)]
 
+
+    def random_action(self, env):
+        observation = env.reset()
+        total_reward = 0
+        # print(observation)
+
+        # iterate through specified range and add up the total reward
+        for _ in range(self.iterations):
+            action = self.env.action_space.sample()
+            env.render()
+            # print(action)
+            observation, reward, done, info = self.env.step(action)
+            # print(info)
+            # print(reward)
+            total_reward += reward
+            if done:
+                break
+
     def getQValue(self, state, action):
         return self.QValues[state, action]
 
@@ -60,6 +79,7 @@ class TDLearningAgent(LearningAgent):
           if maxQValue < QValue:
             maxQValue = QValue
         return 0 if maxQValue is None else maxQValue
+
 
     def getPolicy(self, state):
         maxQValue, maxAction = None, None
@@ -90,7 +110,33 @@ class TDLearningAgent(LearningAgent):
                 episode_rewards += reward
             #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
-    def test_agent(self):
+
+    def test_frozen_lake(self):
+        print 'testing TDLearningAgent...'
+        rewards, iterations = 0, 1
+        for _ in range(iterations):
+            obs, done = self.env.reset(), False
+            while not done:
+                action = self.getPolicy(obs)
+                obs, reward, done, info = self.env.step(action)
+                rewards += reward
+                print reward
+                print info
+
+
+        if rewards / float(iterations) > 0.78:
+            print 'Tests passed.'
+        a = rewards / float(iterations)
+        print "Average Rewards:", a
+        print "rewards:", rewards
+
+
+        ## Create a model. Find the probability
+        ## that it moves in the right direction.
+
+
+
+    def test_taxi(self):
         print 'testing TDLearningAgent...'
         passed = 0
         for _ in range(self.iterations):
@@ -129,7 +175,7 @@ class MonteCarloAgent(LearningAgent):
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)
 """
-class ApproximateQLearningAgent(Agent):
+class ApproximateQLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations):
         # instantiate Q values
         pass

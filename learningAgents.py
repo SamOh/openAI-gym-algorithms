@@ -5,6 +5,7 @@ import numpy
 import tensorflow
 import copy
 import utils
+from taxi import solveTaxi
 
 """
 General class to inherit for other learning algo classes
@@ -34,13 +35,14 @@ class RandomAgent(Agent):
         print 'testing RandomAgent...'
         self.env.reset()
         done, episode_rewards = False, 0
-        while done == False:
+        while not done:
             _, reward, done, _ = self.env.step(self.env.action_space.sample())
+            episode_rewards += reward
         print 'testing episode gained {} rewards'.format(episode_rewards)
 
 
 """
-Agent for Temportal Difference Learning
+Agent for Temporal Difference Learning
 """
 class TDLearningAgent(Agent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
@@ -84,7 +86,7 @@ class TDLearningAgent(Agent):
         for episode in range(self.iterations):
             episode_rewards = 0
             done, prevObs = False, self.env.reset()
-            while done == False:
+            while not done:
                 action = self.epsilonGreedyAction(prevObs)
                 obs, reward, done, _ = self.env.step(action)
                 self.updateQValues(prevObs, action, obs, reward)
@@ -94,13 +96,23 @@ class TDLearningAgent(Agent):
 
     def test_agent(self):
         print 'testing TDLearningAgent...'
-        episode_rewards = 0
-        done, obs = False, self.env.reset()
-        while done == False:
-            action = self.getPolicy(obs)
-            obs, reward, done, _ = self.env.step(action)
-            episode_rewards += reward
-        print 'testing episode gained {} rewards'.format(episode_rewards)
+        passed = 0
+        for _ in range(self.iterations):
+            obs, done, actions = self.env.reset(), False, []
+            optimalActions = solveTaxi(obs)
+            while not done:
+                action = self.getPolicy(obs)
+                actions.append(action)
+                obs, _, done, _ = self.env.step(action)
+                if len(actions) > len(optimalActions):
+                    break
+            if done:
+                if len(actions) == len(optimalActions):
+                    passed += 1
+                if len(actions) < len(optimalActions):
+                    print "This is impossible!"
+        print '{}% of tests passed optimally'.format(passed * 100.0 / self.iterations)
+
 
 """
 TODO
@@ -136,51 +148,8 @@ class DiscreteInputBasicQLearning(Agent):
 """
 QLearning agent (RL2 last thing scott talked about)
 """
-class DeepQLearningAgent(Agent):
-    def __init__(self, game_name, episodes):
-
-        self.env = gym.make(game_name)
-        self.episodes = episodes
-        self.observation = self.env.reset()
-        # number 7056 comes from image which is a 84x84x1 color image
-        self.scalarInput = tensorflow.placeholder(shape=[None, 7056], dtype=tf.float32)
-        self.imageIn = tensorflow.reshpae(self.scalarInput, shape=[-1,84,84,2])
-
-        # create 4 layers of the convolutional neural network
-        conv1 = slim.conv2d( \
-            inputs=imageIn,num_outputs=32,kernel_size=[8,8],stride=[4,4],padding='VALID', biases_initializer=None)
-        conv2 = slim.conv2d( \
-            inputs=conv1,num_outputs=64,kernel_size=[4,4],stride=[2,2],padding='VALID', biases_initializer=None)
-        conv3 = slim.conv2d( \
-            inputs=conv2,num_outputs=64,kernel_size=[3,3],stride=[1,1],padding='VALID', biases_initializer=None)
-        conv4 = slim.conv2d( \
-            inputs=conv3,num_outputs=512,kernel_size=[7,7],stride=[1,1],padding='VALID', biases_initializer=None)
-
-        # Take the output from the final convolutional layer and split it into separate advantage and value streams.
-        streamAC,streamVC = tensorflow.split(conv4,2,3)
-        streamA = slim.flatten(streamAC)
-        streamV = slim.flatten(streamVC)
-        xavier_init = tensorflow.contrib.layers.xavier_initializer()
-        AW = tensorflow.Variable(xavier_init([h_size//2,env.actions]))
-        VW = tensorflow.Variable(xavier_init([h_size//2,1]))
-        Advantage = tensorflow.matmul(streamA,AW)
-        Value = tensorflow.matmul(streamV,VW)
-
-        # Combine them together to get our final Q-values
-        self.Qout = self.Value + tensorflow.subtract(self.Advantage,tensorflow.reduce_mean(self.Advantage,axis=1,keep_dims=True))
-        self.predict = tensorflow.argmax(self.Qout,1)
-
-        # We obtain the loss by taking the sum of squares difference between the target and prediction Q values.
-        self.targetQ = tensorflow.placeholder(shape=[None],dtype=tensorflow.float32)
-        self.actions = tensorflow.placeholder(shape=[None],dtype=tensorflow.int32)
-        self.actions_onehot = tensorflow.one_hot(self.actions,env.actions,dtype=tensorflow.float32)
-
-        self.Q = tensorflow.reduce_sum(tensorflow.multiply(self.Qout, self.actions_onehot), axis=1)
-
-        self.loss = tensorflow.reduce_mean(tensorflow.square(self.targetQ - self.Q))
-        self.trainer = tensorflow.train.AdamOptimizer(learning_rate=0.0001)
-        self.updateModel = self.trainer.minimize(self.loss)
-
-    def train_agent(self):
-        init = tf.initialize_all_variables()
+class ApproximateQLearningAgent(Agent):
+    def __init__(self, game_name, iterations):
+        # instantiate Q values
+        pass
 

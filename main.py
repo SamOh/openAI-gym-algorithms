@@ -2,7 +2,7 @@ import gym
 import utils
 from learningAgents import *
 
-### User Params ###
+### TAXI PARAMS ###
 
 # The name of the game to solve
 game_name = 'Taxi-v2'

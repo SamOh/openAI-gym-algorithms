@@ -1,34 +1,31 @@
 import gym
-import os
 import random
-import numpy as np
-import copy
 import utils
 from taxi import solveTaxi
 
 """
 General class to inherit for other learning algo classes
 """
-class Agent:
+class LearningAgent:
     def __init__(self):
         pass
 
-    def train_agent(self, env):
+    def train_agent(self):
         """
         All agents must have a training component that trains the agent to learn how to play
         the game based on which algorithm is being used
         """
         pass
 
+    def test_agent(self):
+        pass
+
 """
 Random Agent to compare with (takes random actions)
 """
-class RandomAgent(Agent):
+class RandomAgent(object):
     def __init__(self, game_name):
         self.env = gym.make(game_name)
-
-    def train_agent(self):
-        return
 
     def test_agent(self):
         print 'testing RandomAgent...'
@@ -43,7 +40,7 @@ class RandomAgent(Agent):
 """
 Agent for Temporal Difference Learning
 """
-class TDLearningAgent(Agent):
+class TDLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon
@@ -116,7 +113,7 @@ class TDLearningAgent(Agent):
 """
 TODO
 """
-class MonteCarloAgent(Agent):
+class MonteCarloAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon

@@ -9,10 +9,15 @@ Each action is repeatedly performed for a duration of k frames, where k is
 uniformly sampled from {2,3,4}.
 """
 
-env = gym.make('Taxi-v2')
+env = gym.make('FrozenLake-v0')
+obs = env.reset()
+print obs
+env.render()
+rewards, steps = 0, 0
 
 while True:
-  s, r, d, info = env.step(env.action_space.sample())
+  obs, r, d, info = env.step(env.action_space.sample())
+  print obs
   env.render()
 
   if d:

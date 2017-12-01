@@ -2,7 +2,7 @@ import gym
 import utils
 from learningAgents import * 
 
-### User Params ###
+### TAXI PARAMS ###
 
 game_name = 'FrozenLake-v0'
 number_iterations = 10000

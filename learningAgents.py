@@ -90,11 +90,11 @@ class TDLearningAgent(LearningAgent):
                 self.updateQValues(prevObs, action, obs, reward)
                 prevObs = obs
                 episode_rewards += reward
-            #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
+            # print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
     def test_frozen_lake(self):
         print 'testing TDLearningAgent...'
-        rewards, iterations = 0, 1
+        rewards, iterations = 0, 1000
         for _ in range(iterations):
             obs, done = self.env.reset(), False
             while not done:
@@ -102,6 +102,7 @@ class TDLearningAgent(LearningAgent):
                 obs, reward, done, info = self.env.step(action)
                 rewards += reward
         print "Percent success rate was {}%".format(rewards*100.0/iterations)
+
 
     def test_taxi(self):
         print 'testing TDLearningAgent...'
@@ -125,18 +126,63 @@ class TDLearningAgent(LearningAgent):
 """
 TODO
 """
+
+
 class MonteCarloAgent(LearningAgent):
-    def __init__(self, game_name, iterations, epsilon, gamma, alpha):
+    def __init__(self, game_name, iterations, gamma):
         self.env = gym.make(game_name)
-        self.epsilon = epsilon
         self.gamma = gamma
-        self.alpha = alpha
         self.iterations = iterations
-        self.QValues = utils.Counter()
+        self.state_rewards = {}
+        self.state_value = utils.Counter()
         self.actions = [i for i in range(self.env.action_space.n)]
 
     def train_agent(self):
+        print 'training MCLearningAgent with {} iterations...'.format(self.iterations)
+        for episode in range(self.iterations):
+
         return
+
+    def initializeRandomPolicy(self):
+        self.env.reset()
+       
+        action, done = self.env.action_space.sample(), False
+
+        observation, reward, done, info = self.env.step(self.env.action_space.sample())
+        while done == False:
+            if observation in self.state_value:
+                self.state_rewards[observation].append(reward)
+            else:
+                self.state_rewards[observation] = [reward]
+            observation, reward, done, info = self.env.step(self.env.action_space.sample())
+
+        self.state_value = utils.Counter()
+        for obs in self.state_rewards.keys():
+            self.state_value = sum(self.state_rewards[obs]) / float( len(self.state_rewards[obs]) ) 
+
+        self.state_rewards = {} # ERASE
+
+
+    def updatePolicy(self):
+        return
+
+    def getPolicy(self, state):
+        self.env.action_space.sample()
+        self.state_value[state]
+
+
+
+        maxQValue, maxAction = None, None
+        for action in self.actions:
+          QValue = self.getQValue(state, action)
+          if maxQValue < QValue:
+            maxQValue = QValue
+            maxAction = action
+        return maxAction
+
+
+
+
 
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)

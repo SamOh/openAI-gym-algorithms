@@ -17,6 +17,8 @@ tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
 tdl_agent.train_agent()
 tdl_agent.test_frozen_lake()
 
+
+
 """
 Value Iteration Tests
 """
@@ -25,7 +27,7 @@ print 'Testing Value Iteration...'
 
 mdp = FrozenLakeMDP()
 discount = 0.9
-iterations = 500
+iterations = 6
 valueAgent = ValueIterationAgent(mdp, discount, iterations)
 
 def getPos(i):
@@ -40,3 +42,6 @@ for _ in range(episodes):
     obs, reward, done, _ = env.step(action)
     rewards += reward
 print 'Percent success rate was {}%'.format(rewards*100.0/episodes)
+
+
+

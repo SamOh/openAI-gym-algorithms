@@ -16,12 +16,14 @@ uniformly sampled from {2,3,4}.
 
 env = gym.make('FrozenLake-v0')
 obs = env.reset()
+
 env.render()
 print obs
 rewards, steps = 0, 0
 
 
 while True:
+
   obs, r, d, info = env.step(3)
   env.render()
   print obs

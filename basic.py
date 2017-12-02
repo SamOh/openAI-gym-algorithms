@@ -14,7 +14,7 @@ uniformly sampled from {2,3,4}.
 # 2 -> right
 # 3 -> up
 
-env = gym.make('FrozenLake-v0')
+env = gym.make('FrozenLake8x8-v0')
 obs = env.reset()
 
 env.render()

@@ -110,7 +110,6 @@ class TDLearningAgent(LearningAgent):
                 episode_rewards += reward
             #print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
-
     def test_frozen_lake(self):
         print 'testing TDLearningAgent...'
         rewards, iterations = 0, 1
@@ -120,21 +119,7 @@ class TDLearningAgent(LearningAgent):
                 action = self.getPolicy(obs)
                 obs, reward, done, info = self.env.step(action)
                 rewards += reward
-                print reward
-                print info
-
-
-        if rewards / float(iterations) > 0.78:
-            print 'Tests passed.'
-        a = rewards / float(iterations)
-        print "Average Rewards:", a
-        print "rewards:", rewards
-
-
-        ## Create a model. Find the probability
-        ## that it moves in the right direction.
-
-
+        print "Percent success rate was {}%".format(rewards*100.0/iterations)
 
     def test_taxi(self):
         print 'testing TDLearningAgent...'
@@ -153,8 +138,7 @@ class TDLearningAgent(LearningAgent):
                     passed += 1
                 if len(actions) < len(optimalActions):
                     print "This is impossible!"
-        print '{}% of tests passed optimally'.format(passed * 100.0 / self.iterations)
-
+        print 'Percent success rate was {}%'.format(passed * 100.0 / self.iterations)
 
 """
 TODO

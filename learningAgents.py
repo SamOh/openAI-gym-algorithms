@@ -40,7 +40,7 @@ class RandomAgent(object):
 """
 Agent for Temporal Difference Learning
 """
-class TDLearningAgent(LearningAgent):
+class QLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon

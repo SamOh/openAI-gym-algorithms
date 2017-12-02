@@ -61,6 +61,7 @@ class FrozenLakeMDP(object):
                      [(state, tThird), (up, third)], \
                      [(state, third), (up, third), (left, third)], action)
 
+
     if state == (1,2) or state == (1,3):
       return options([(state, third), (up, third), (down, third)], \
                      [(state, third), (down, third), (right, third)], \

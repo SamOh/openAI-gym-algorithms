@@ -51,24 +51,6 @@ class TDLearningAgent(LearningAgent):
         self.QValues = utils.Counter()
         self.actions = [i for i in range(self.env.action_space.n)]
 
-
-    def random_action(self, env):
-        observation = env.reset()
-        total_reward = 0
-        # print(observation)
-
-        # iterate through specified range and add up the total reward
-        for _ in range(self.iterations):
-            action = self.env.action_space.sample()
-            env.render()
-            # print(action)
-            observation, reward, done, info = self.env.step(action)
-            # print(info)
-            # print(reward)
-            total_reward += reward
-            if done:
-                break
-
     def getQValue(self, state, action):
         return self.QValues[state, action]
 

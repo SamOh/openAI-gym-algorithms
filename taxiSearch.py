@@ -1,6 +1,9 @@
 """
-Below is an implementation of the open AI game taxi, where we use A* search
-to compute the optimal path from the start state of the game.
+Below is a search problem for the open AI game taxi. We use A* search
+to compute the optimal path from the start state of the game. The state space
+is a 5x5 grid (open AI represents this grid and the states with numbers from
+0-499). We convert the number representation to a coordinate system, with (1,1)
+at the bottom left, and (5,5) at the top right.
 """
 
 import gym
@@ -14,7 +17,7 @@ def getPosition(obs):
   return (tens + 2) / 2, 5 - hundreds
 
 """
-returns (resultingPoint, actionUsed) for a given taxi position
+returns (resulting point, action used) for a given taxi position
 """
 def getSuccessors(pos):
   x, y = pos
@@ -104,7 +107,8 @@ def aStarSearch(pos, goal):
   raise Exception('Problem Not Solved')
 
 """
-computes action sequence starting at X1 and ending at X2
+computes optimal action sequence starting at pos, picking up X1, and
+dropping off at X2
 """
 def computeActionSequence(X1, X2, pos):
   pickup = aStarSearch(pos, X1)
@@ -114,7 +118,7 @@ def computeActionSequence(X1, X2, pos):
   return pickup + dropoff
 
 """
-solves taxi game based on initial observation
+solves taxi game based on initial gamestate observation
 """
 def solveTaxi(obs):
   tens, ones = ((obs % 100) - (obs % 10)) / 10, obs % 10

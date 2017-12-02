@@ -5,13 +5,26 @@ from learningAgents import *
 
 
 game_name = 'Taxi-v2'
-number_iterations = 2000
+number_iterations = 1250
 epsilon = 0.15
 gamma = 0.9
 alpha = 0.1
 
 tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
 tdl_agent.train_agent()
-tdl_agent.test_frozen_lake()
+tdl_agent.test_taxi()
+
+tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
+tdl_agent.train_agent()
+tdl_agent.test_taxi()
+
+tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
+tdl_agent.train_agent()
+tdl_agent.test_taxi()
+
+tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
+tdl_agent.train_agent()
+tdl_agent.test_taxi()
+
 
 

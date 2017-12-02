@@ -1,4 +1,4 @@
-
+import gym
 import utils as util
 
 class ValueIterationAgent(object):
@@ -77,3 +77,15 @@ class ValueIterationAgent(object):
             maxAction = action
 
         return maxAction
+
+    def test_agent(self, game, episodes):
+      env = gym.make(game)
+      env.reset()
+      rewards = 0
+      for _ in range(episodes):
+        obs, done = env.reset(), False
+        while not done:
+          action = self.getPolicy(self.mdp.getPos(obs))
+          obs, reward, done, _ = env.step(action)
+          rewards += reward
+      print 'Percent success rate was {}%'.format(rewards*100.0/episodes)

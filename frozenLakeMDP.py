@@ -9,6 +9,12 @@ class FrozenLakeMDP(object):
     self.startState = (1, 1)
 
   """
+  converts a grid number to an (x, y) coordinate
+  """
+  def getPos(self, i):
+    return ((i % 4) + 1, (i / 4) + 1)
+
+  """
   list of all coordinate points of 4x4 grid
   """
   def getStates(self):
@@ -87,7 +93,7 @@ class FrozenLakeMDP(object):
                      [(state, tThird), (left, third)], \
                      [(state, tThird), (up, third)], \
                      [(state, third), (up, third), (left, third)], action)
-    
+
     if state == (1,2) or state == (1,3):
       return options([(state, third), (up, third), (down, third)], \
                      [(state, third), (down, third), (right, third)], \

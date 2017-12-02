@@ -23,12 +23,18 @@ Value Iteration Tests
 
 print 'Testing Value Iteration...'
 
-mdp = FrozenLakeMDP()
+mdp = FrozenLakeMDP(4, {(2,2), (4,2), (4,3), (1,4)})
 discount = 0.9
 iterations = 25
 valueAgent = ValueIterationAgent(mdp, discount, iterations)
 test_episodes = 1000
 valueAgent.test_agent(game_name, test_episodes)
+
+# optimal policy list: note that None appears at holes.
+policy = []
+for state in range(16):
+  policy.append(valueAgent.getPolicy(mdp.getPos(state)))
+print 'optimal policy: ', policy
 
 
 

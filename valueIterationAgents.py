@@ -28,7 +28,7 @@ class ValueIterationAgent(object):
 
               summation = 0
               for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-                summation += prob * (self.mdp.getReward(state, action, nextState) + \
+                summation += prob * (self.mdp.getReward(nextState) + \
                   self.discount * valueIteration(nextState, iteration + 1))
 
               if maxValue < summation:
@@ -53,7 +53,7 @@ class ValueIterationAgent(object):
         """
         summation = 0
         for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-          summation += prob * (self.mdp.getReward(state, action, nextState) + self.discount * self.getValue(nextState))
+          summation += prob * (self.mdp.getReward(nextState) + self.discount * self.getValue(nextState))
         return summation
 
     def getPolicy(self, state):

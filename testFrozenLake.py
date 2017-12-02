@@ -13,7 +13,7 @@ epsilon = 0.2
 gamma = 0.99
 alpha = 0.1
 
-tdl_agent = TDLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
+tdl_agent = QLearningAgent(game_name, number_iterations, epsilon, gamma, alpha)
 tdl_agent.train_agent()
 tdl_agent.test_frozen_lake()
 

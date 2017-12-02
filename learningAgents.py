@@ -2,7 +2,6 @@ import gym
 import random
 import utils
 from taxiSearch import solveTaxi
-
 """
 General class to inherit for other learning algo classes
 """
@@ -94,6 +93,8 @@ class TDLearningAgent(LearningAgent):
 
     def test_frozen_lake(self):
         print 'testing TDLearningAgent...'
+
+        print 'testing Success Rate...'
         rewards, iterations = 0, 1000
         for _ in range(iterations):
             obs, done = self.env.reset(), False
@@ -102,7 +103,6 @@ class TDLearningAgent(LearningAgent):
                 obs, reward, done, info = self.env.step(action)
                 rewards += reward
         print "Percent success rate was {}%".format(rewards*100.0/iterations)
-
 
     def test_taxi(self):
         print 'testing TDLearningAgent...'
@@ -121,7 +121,7 @@ class TDLearningAgent(LearningAgent):
                     passed += 1
                 if len(actions) < len(optimalActions):
                     print "This is impossible!"
-        print 'Percent success rate was {}%'.format(passed * 100.0 / self.iterations)
+        print 'Percent success rate was {}%'.format(passed*100.0/self.iterations)
 
 """
 TODO
@@ -140,12 +140,11 @@ class MonteCarloAgent(LearningAgent):
     def train_agent(self):
         print 'training MCLearningAgent with {} iterations...'.format(self.iterations)
         for episode in range(self.iterations):
-
-        return
+            return
 
     def initializeRandomPolicy(self):
         self.env.reset()
-       
+
         action, done = self.env.action_space.sample(), False
 
         observation, reward, done, info = self.env.step(self.env.action_space.sample())
@@ -158,7 +157,7 @@ class MonteCarloAgent(LearningAgent):
 
         self.state_value = utils.Counter()
         for obs in self.state_rewards.keys():
-            self.state_value = sum(self.state_rewards[obs]) / float( len(self.state_rewards[obs]) ) 
+            self.state_value = sum(self.state_rewards[obs]) / float( len(self.state_rewards[obs]) )
 
         self.state_rewards = {} # ERASE
 

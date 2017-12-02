@@ -36,5 +36,21 @@ for state in range(16):
   policy.append(valueAgent.getPolicy(mdp.getPos(state)))
 print 'optimal policy: ', policy
 
+print '\nTesting VI for 8x8 FrozenLake...'
+
+game_name = 'FrozenLake8x8-v0'
+mdp = FrozenLakeMDP(8, {(4,3),(6,4),(4,5),(2,6),(3,6),(7,6),(2,7),(5,7),(7,7),(4,8)})
+discount = 0.99
+iterations = 100
+valueAgent = ValueIterationAgent(mdp, discount, iterations)
+test_episodes = 100
+valueAgent.test_agent(game_name, test_episodes)
+
+# optimal policy list: note that None appears at holes.
+policy = []
+for state in range(16):
+  policy.append(valueAgent.getPolicy(mdp.getPos(state)))
+print 'optimal policy: ', policy
+
 
 

@@ -25,6 +25,7 @@ rewards, steps = 0, 0
 while True:
 
   obs, r, d, info = env.step(3)
+  print info
   env.render()
   print obs
 

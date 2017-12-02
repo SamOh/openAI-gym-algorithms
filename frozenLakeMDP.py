@@ -19,7 +19,7 @@ class FrozenLakeMDP(object):
   list of all coordinate points of 4x4 grid
   """
   def getStates(self):
-    return [self.getPos(i) for i in range(16)]
+    return [self.getPos(i) for i in range(self.max*self.max)]
 
   """
   FrozenLake has 4 actions: left (0), down (1), right (2), up (3)

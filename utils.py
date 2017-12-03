@@ -270,5 +270,5 @@ def print_game_parameters(game_name):
     env = gym.make(game_name)
     # print("There are", env.observation_space.n, "possible states")
     print("There are", env.action_space.n, "possible actions")
-    print(env.env.get_action_meanings())
+    # print(env.env.get_action_meanings())
 

@@ -179,5 +179,16 @@ class QLearningAgent(LearningAgent):
                     passed += 1
                 if len(actions) < len(optimalActions):
                     print "This is impossible!"
-        print 'Optimal performance rate was {}%\n'.format(passed*100.0/self.testing)
+        print 'Optimal performance rate was {}\n'.format(passed*100.0/self.testing)
+
+    def test_nchain(self):
+        rewards = 0
+        for _ in range(self.testing):
+            obs, done, actions = self.env.reset(), False, []
+            while not done:
+                action = self.getPolicy(obs)
+                obs, reward, done, info = self.env.step(action)
+                rewards += reward
+        print "Average score was {}%\n".format(rewards/self.testing)
+
 

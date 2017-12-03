@@ -157,7 +157,7 @@ class QLearningAgent(LearningAgent):
                 action = self.getPolicy(obs)
                 obs, reward, done, info = self.env.step(action)
                 rewards += reward
-        print "Percent success rate was {}%".format(rewards*100.0/self.testing)
+        print "Percent success rate was {}%\n".format(rewards*100.0/self.testing)
         policy = []
         for i in range(maxValue*maxValue):
             policy.append(self.getPolicy(i))
@@ -179,7 +179,7 @@ class QLearningAgent(LearningAgent):
                     passed += 1
                 if len(actions) < len(optimalActions):
                     print "This is impossible!"
-        print 'Percent success rate was {}%'.format(passed*100.0/self.testing)
+        print 'Optimal performance rate was {}%\n'.format(passed*100.0/self.testing)
 
 
 """

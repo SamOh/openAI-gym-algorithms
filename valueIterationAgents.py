@@ -29,7 +29,7 @@ class ValueIterationAgent(object):
 
               summation = 0
               for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-                summation += prob * (self.mdp.getReward(nextState) + \
+                summation += prob * (self.mdp.getReward(state, action, nextState) + \
                   self.discount * valueIteration(nextState, iteration + 1))
 
               if maxValue < summation:
@@ -47,7 +47,7 @@ class ValueIterationAgent(object):
     def getQValue(self, state, action):
         summation = 0
         for nextState, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-          summation += prob * (self.mdp.getReward(nextState) + self.discount * self.getValue(nextState))
+          summation += prob * (self.mdp.getReward(state, action, nextState) + self.discount * self.getValue(nextState))
         return summation
 
     def getPolicy(self, state):
@@ -61,21 +61,42 @@ class ValueIterationAgent(object):
           if maxValue is None or maxValue < QValue:
             maxValue = QValue
             maxAction = action
-
         return maxAction
 
-    def test_agent(self, game, maxValue):
-      env = gym.make(game)
-      env.reset()
-      rewards = 0
-      for _ in range(self.testing_iterations):
-        obs, done = env.reset(), False
-        while not done:
-          action = self.getPolicy(self.mdp.getPos(obs))
-          obs, reward, done, _ = env.step(action)
-          rewards += reward
-      print 'Percent success rate was {}%'.format(rewards*100.0/self.testing_iterations)
-      policy = []
-      for state in range(maxValue * maxValue):
-        policy.append(self.getPolicy(self.mdp.getPos(state)))
-      print 'optimal policy: {}\n'.format(policy)
+class FrozenLakeVIAgent(ValueIterationAgent):
+  def __init__(self, mdp, testing_iterations, discount=0.99, iterations=100):
+    ValueIterationAgent.__init__(self, mdp, testing_iterations, discount, iterations)
+
+  def test_agent(self, env, maxValue):
+    env.reset()
+    rewards = 0
+    for _ in range(self.testing_iterations):
+      obs, done = env.reset(), False
+      while not done:
+        action = self.getPolicy(self.mdp.getPos(obs))
+        obs, reward, done, _ = env.step(action)
+        rewards += reward
+    print 'Percent success rate was {}%'.format(rewards*100.0/self.testing_iterations)
+    policy = []
+    for state in range(maxValue * maxValue):
+      policy.append(self.getPolicy(self.mdp.getPos(state)))
+    print 'optimal policy: {}\n'.format(policy)
+
+class NChainVIAgent(ValueIterationAgent):
+  def __init__(self, mdp, testing_iterations, discount=0.99, iterations=100):
+    ValueIterationAgent.__init__(self, mdp, testing_iterations, discount, iterations)
+
+  def test_agent(self, env, n):
+    env.reset()
+    rewards = 0
+    for _ in range(self.testing_iterations):
+      obs, done = env.reset(), False
+      while not done:
+        action = self.getPolicy(obs)
+        obs, reward, done, _ = env.step(action)
+        rewards += reward
+    print 'Average rewards were:', rewards/float(self.testing_iterations)
+    policy = []
+    for state in range(n):
+      policy.append(self.getPolicy(state))
+    print 'optimal policy: {}\n'.format(policy)

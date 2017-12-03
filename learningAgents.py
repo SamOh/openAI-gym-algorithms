@@ -1,7 +1,7 @@
 import gym
 import random
 import utils
-from taxiSearch import *
+from searchTaxi import *
 
 """
 General class to inherit for other learning algo classes
@@ -98,14 +98,17 @@ class QLearningAgent(LearningAgent):
             maxQValue = QValue
         return 0 if maxQValue is None else maxQValue
 
+    # we break ties randomly
     def getPolicy(self, state):
-        maxQValue, maxAction = None, None
+        maxQValue, maxActions = None, []
         for action in self.actions:
           QValue = self.getQValue(state, action)
           if maxQValue < QValue:
             maxQValue = QValue
-            maxAction = action
-        return maxAction
+            maxActions = [action]
+          elif maxQValue == QValue:
+            maxActions.append(action)
+        return random.choice(maxActions)
 
     def epsilonGreedyAction(self, state):
         return random.choice(self.actions) if utils.flipCoin(self.epsilon) else self.getPolicy(state)
@@ -185,20 +188,3 @@ class FrozenLakeQLAgent(QLearningAgent):
 
                 self.updateQValues(prevObs, action, obs, reward)
                 prevObs = obs
-
-"""
-Same as the default Q-Learning agent, but breaks ties by taking the last action
-(we use this in NChain to make the default policy to go backwards)
-"""
-class BackwardQLAgent(QLearningAgent):
-    def __init__(self, env, training_iterations, testing_iterations, epsilon, gamma, alpha):
-        QLearningAgent.__init__(self, env, training_iterations, testing_iterations, epsilon, gamma, alpha)
-
-    def getPolicy(self, state):
-        maxQValue, maxAction = None, None
-        for action in self.actions:
-          QValue = self.getQValue(state, action)
-          if maxQValue <= QValue:
-            maxQValue = QValue
-            maxAction = action
-        return maxAction

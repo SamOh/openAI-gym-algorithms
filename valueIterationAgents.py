@@ -80,7 +80,7 @@ class FrozenLakeVIAgent(ValueIterationAgent):
     policy = []
     for state in range(maxValue * maxValue):
       policy.append(self.getPolicy(self.mdp.getPos(state)))
-    print 'optimal policy: {}\n'.format(policy)
+    print 'Optimal Policy: {}\n'.format(policy)
 
 class NChainVIAgent(ValueIterationAgent):
   def __init__(self, mdp, testing_iterations, discount=0.99, iterations=100):
@@ -99,4 +99,4 @@ class NChainVIAgent(ValueIterationAgent):
     policy = []
     for state in range(n):
       policy.append(self.getPolicy(state))
-    print 'optimal policy: {}\n'.format(policy)
+    print 'Optimal Policy: {}\n'.format(policy)

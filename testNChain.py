@@ -1,5 +1,5 @@
 import gym
-from learningAgents import BackwardQLAgent, RandomAgent
+from learningAgents import QLearningAgent, RandomAgent
 from valueIterationAgents import NChainVIAgent
 from MDP import NChainMDP
 
@@ -15,7 +15,7 @@ gamma = 0.9
 alpha = 0.1
 
 # this agent will default to going backwards (we know optimal policy is forward)
-ql_agent = BackwardQLAgent(env, training_iterations, testing_iterations, \
+ql_agent = QLearningAgent(env, training_iterations, testing_iterations, \
                           epsilon, gamma, alpha)
 
 print 'Training with {} iterations...'.format(training_iterations)

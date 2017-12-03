@@ -6,7 +6,7 @@ from MDP import NChainMDP
 print 'Testing Q-Learning...\n'
 
 env = gym.make('NChain-v0')
-training_iterations = 1
+training_iterations = 5
 testing_iterations = 1000
 
 # hyperparameters tuned for NChain

@@ -33,7 +33,7 @@ valueAgent = ValueIterationAgent(mdp, discount, iterations)
 def getPos(i):
     return ((i % 4) + 1, (i / 4) + 1)
 
-env = gym.make('FrozenLake-v0')
+env = gym.make(game_name)
 rewards, episodes = 0, 1000
 for _ in range(episodes):
   obs, done = env.reset(), False

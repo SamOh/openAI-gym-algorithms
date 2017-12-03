@@ -81,9 +81,6 @@ class QLearningAgent(LearningAgent):
         self.QValues[state, action] = (1 - self.alpha) * self.QValues[state, action] + \
           self.alpha * (reward + self.gamma * self.getValue(nextState))
 
-    """
-    Normal Q-Learning training
-    """
     def train_agent(self):
         print 'Starting regular QLearning with {} iterations...'.format(self.training)
         for episode in range(self.training):
@@ -91,61 +88,6 @@ class QLearningAgent(LearningAgent):
             while not done:
                 action = self.epsilonGreedyAction(prevObs)
                 obs, reward, done, _ = self.env.step(action)
-                self.updateQValues(prevObs, action, obs, reward)
-                prevObs = obs
-
-    """
-    QLearning with extra incentives for FrozenLake
-    """
-    def train_agent_frozen(self, maxValue, holes):
-        print 'Starting special QLearning for FrozenLake with {} iterations...'.format(self.training)
-
-        for episode in range(self.training):
-            done, prevObs = False, self.env.reset()
-            while not done:
-                action = self.epsilonGreedyAction(prevObs)
-                obs, reward, done, _ = self.env.step(action)
-
-                # reward getting closer to the goal
-                if ((obs % maxValue) > (prevObs % maxValue) or \
-                (obs / maxValue) > (prevObs / maxValue)):
-                    reward += 0.01
-
-                # punish going backwards or dying
-                if ((obs % maxValue) < (prevObs % maxValue) or \
-                (obs / maxValue) < (prevObs / maxValue)) or obs in holes:
-                    reward -= 0.01
-
-                self.updateQValues(prevObs, action, obs, reward)
-                prevObs = obs
-
-    """
-    QLearning with extra incentives for taxi
-    """
-    def train_agent_taxi(self):
-        print 'Starting special QLearning for Taxi with {} iterations...'.format(self.training)
-        for episode in range(self.training):
-            done, prevObs = False, self.env.reset()
-            pickup, dropoff = findPickupDropoff(prevObs)
-
-            while not done:
-                action = self.epsilonGreedyAction(prevObs)
-                obs, reward, done, _ = self.env.step(action)
-
-                pos, prevPos = getPosition(obs), getPosition(prevObs)
-                if isPickingUp(obs):
-                    dist, prevDist = manhattanDistance(pos, pickup), manhattanDistance(prevPos, pickup)
-                    if dist < prevDist:
-                        reward += 1
-                    if dist > prevDist:
-                        reward -= 1
-                else:
-                    dist, prevDist = manhattanDistance(pos, dropoff), manhattanDistance(prevPos, dropoff)
-                    if dist < prevDist:
-                        reward += 1
-                    if dist > prevDist:
-                        reward -= 1
-
                 self.updateQValues(prevObs, action, obs, reward)
                 prevObs = obs
 
@@ -181,6 +123,68 @@ class QLearningAgent(LearningAgent):
                     print "This is impossible!"
         print 'Optimal performance rate was {}%\n'.format(passed*100.0/self.testing)
 
+"""
+QLearning with extra incentives for taxi
+"""
+class TaxiQLAgent(QLearningAgent):
+    def __init__(self, game_name, training_iterations, testing_iterations, epsilon, gamma, alpha):
+        QLearningAgent.__init__(self, game_name, training_iterations, testing_iterations, epsilon, gamma, alpha)
+
+    def train_agent(self):
+        print 'Starting special QLearning for Taxi with {} iterations...'.format(self.training)
+        for episode in range(self.training):
+            done, prevObs = False, self.env.reset()
+            pickup, dropoff = findPickupDropoff(prevObs)
+
+            while not done:
+                action = self.epsilonGreedyAction(prevObs)
+                obs, reward, done, _ = self.env.step(action)
+
+                pos, prevPos = getPosition(obs), getPosition(prevObs)
+                if isPickingUp(obs):
+                    dist, prevDist = manhattanDistance(pos, pickup), manhattanDistance(prevPos, pickup)
+                    if dist < prevDist:
+                        reward += 1
+                    if dist > prevDist:
+                        reward -= 1
+                else:
+                    dist, prevDist = manhattanDistance(pos, dropoff), manhattanDistance(prevPos, dropoff)
+                    if dist < prevDist:
+                        reward += 1
+                    if dist > prevDist:
+                        reward -= 1
+
+                self.updateQValues(prevObs, action, obs, reward)
+                prevObs = obs
+
+"""
+QLearning with extra incentives for FrozenLake
+"""
+class FrozenLakeQLAgent(QLearningAgent):
+    def __init__(self, game_name, training_iterations, testing_iterations, epsilon, gamma, alpha):
+        QLearningAgent.__init__(self, game_name, training_iterations, testing_iterations, epsilon, gamma, alpha)
+
+    def train_agent(self, maxValue, holes):
+        print 'Starting special QLearning for FrozenLake with {} iterations...'.format(self.training)
+
+        for episode in range(self.training):
+            done, prevObs = False, self.env.reset()
+            while not done:
+                action = self.epsilonGreedyAction(prevObs)
+                obs, reward, done, _ = self.env.step(action)
+
+                # reward getting closer to the goal
+                if ((obs % maxValue) > (prevObs % maxValue) or \
+                (obs / maxValue) > (prevObs / maxValue)):
+                    reward += 0.01
+
+                # punish going backwards or dying
+                if ((obs % maxValue) < (prevObs % maxValue) or \
+                (obs / maxValue) < (prevObs / maxValue)) or obs in holes:
+                    reward -= 0.01
+
+                self.updateQValues(prevObs, action, obs, reward)
+                prevObs = obs
 
 """
 Basic Estimated QLearning (RL2 last thing scott talked about)

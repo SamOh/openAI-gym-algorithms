@@ -9,25 +9,18 @@ Each action is repeatedly performed for a duration of k frames, where k is
 uniformly sampled from {2,3,4}.
 """
 
-# 0 -> left
-# 1 -> down
-# 2 -> right
-# 3 -> up
-
-env = gym.make('FrozenLake8x8-v0')
+env = gym.make('NChain-v0')
 obs = env.reset()
 
-env.render()
 print obs
 rewards, steps = 0, 0
 
-
 while True:
 
-  obs, r, d, info = env.step(3)
-  print info
-  env.render()
-  print obs
+  # 0 is forward, 1 is backward
+  obs, r, d, info = env.step(0)
+  print "obs is ", obs
+  print "reward was ", r
 
   if d:
     break

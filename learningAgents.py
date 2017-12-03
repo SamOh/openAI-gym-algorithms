@@ -191,4 +191,3 @@ class QLearningAgent(LearningAgent):
                 rewards += reward
         print "Average score was {}%\n".format(rewards/self.testing)
 
-

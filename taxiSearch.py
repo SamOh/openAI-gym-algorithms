@@ -117,48 +117,60 @@ def computeActionSequence(X1, X2, pos):
   dropoff.append(5)
   return pickup + dropoff
 
+def findPickupDropoff(obs):
+  tens, ones = ((obs % 100) - (obs % 10)) / 10, obs % 10
+  G, B, Y, R, pos = (5, 5), (4, 1), (1, 1), (1, 5), getPosition(obs)
+  if (tens % 2) == 1:
+    if ones == 1:
+      return (Y, B)
+    if ones == 2:
+      return (B, R)
+    if ones == 3:
+      return (B, G)
+    if ones == 4:
+      return (B, Y)
+  else:
+    if ones == 1:
+      return (R, G)
+    if ones == 2:
+      return (R, Y)
+    if ones == 3:
+      return (R, B)
+    if ones == 4:
+      return (G, R)
+    if ones == 6:
+      return (G, Y)
+    if ones == 7:
+      return (G, B)
+    if ones == 8:
+      return (Y, R)
+    if ones == 9:
+      return (Y, G)
+
 """
 solves taxi game based on initial gamestate observation
 """
 def solveTaxi(obs):
-  tens, ones = ((obs % 100) - (obs % 10)) / 10, obs % 10
-  G, B, Y, R, pos = (5, 5), (4, 1), (1, 1), (1, 5), getPosition(obs)
+  pickup, dropoff = findPickupDropoff(obs)
+  pos = getPosition(obs)
+  return computeActionSequence(pickup, dropoff, pos)
 
-  if (tens % 2) == 1:
-    if ones == 1:
-      return computeActionSequence(Y, B, pos)
-    if ones == 2:
-      return computeActionSequence(B, R, pos)
-    if ones == 3:
-      return computeActionSequence(B, G, pos)
-    if ones == 4:
-      return computeActionSequence(B, Y, pos)
+"""
+determines if we need to pick up or drop off (we use this for incentivized QLearning)
+"""
+def isPickingUp(obs):
+  tens, ones = ((obs % 100) - (obs % 10)) / 10, obs % 10
+  if (tens % 2) == 1 and ones >= 5:
+    return False
   else:
-    if ones == 1:
-      return computeActionSequence(R, G, pos)
-    if ones == 2:
-      return computeActionSequence(R, Y, pos)
-    if ones == 3:
-      return computeActionSequence(R, B, pos)
-    if ones == 4:
-      return computeActionSequence(G, R, pos)
-    if ones == 6:
-      return computeActionSequence(G, Y, pos)
-    if ones == 7:
-      return computeActionSequence(G, B, pos)
-    if ones == 8:
-      return computeActionSequence(Y, R, pos)
-    if ones == 9:
-      return computeActionSequence(Y, G, pos)
+    return True
 
 if __name__ == "__main__":
   env = gym.make('Taxi-v2')
-  correct, iterations = 0, 1
+  correct, iterations = 0, 1000
   print "Checking accuracy with {} iterations...".format(iterations)
   for _ in range(iterations):
     obs = env.reset()
-    print obs
-    env.render()
     actions = solveTaxi(obs)
     for action in actions:
       obs, _, done, _ = env.step(action)

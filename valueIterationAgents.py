@@ -3,9 +3,10 @@ import utils as util
 
 class ValueIterationAgent(object):
 
-    def __init__(self, mdp, discount, iterations):
+    def __init__(self, mdp, testing_iterations, discount=0.99, iterations=100):
 
         self.mdp = mdp
+        self.testing_iterations = testing_iterations
         self.discount = discount
         self.iterations = iterations
         self.values = util.Counter() # A Counter is a dict with default 0
@@ -63,14 +64,18 @@ class ValueIterationAgent(object):
 
         return maxAction
 
-    def test_agent(self, game, episodes):
+    def test_agent(self, game, maxValue):
       env = gym.make(game)
       env.reset()
       rewards = 0
-      for _ in range(episodes):
+      for _ in range(self.testing_iterations):
         obs, done = env.reset(), False
         while not done:
           action = self.getPolicy(self.mdp.getPos(obs))
           obs, reward, done, _ = env.step(action)
           rewards += reward
-      print 'Percent success rate was {}%'.format(rewards*100.0/episodes)
+      print 'Percent success rate was {}%'.format(rewards*100.0/self.testing_iterations)
+      policy = []
+      for state in range(maxValue * maxValue):
+        policy.append(self.getPolicy(self.mdp.getPos(state)))
+      print 'optimal policy: {}\n'.format(policy)

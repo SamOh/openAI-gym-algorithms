@@ -38,7 +38,7 @@ class RandomAgent(object):
 
 
 """
-Agent for Temporal Difference Learning
+Agent for Q Learning
 """
 class QLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
@@ -79,7 +79,7 @@ class QLearningAgent(LearningAgent):
           self.alpha * (reward + self.gamma * self.getValue(nextState))
 
     def train_agent(self):
-        print 'training TDLearningAgent with {} iterations...'.format(self.iterations)
+        print 'training QLearning Agent with {} iterations...'.format(self.iterations)
         for episode in range(self.iterations):
             episode_rewards = 0
             done, prevObs = False, self.env.reset()
@@ -120,10 +120,8 @@ class QLearningAgent(LearningAgent):
         print 'Percent success rate was {}%'.format(passed*100.0/self.iterations)
 
 """
-TODO
+Monte Carlo Agent
 """
-
-
 class MonteCarloAgent(LearningAgent):
     def __init__(self, game_name, iterations, gamma):
         self.env = gym.make(game_name)
@@ -165,8 +163,6 @@ class MonteCarloAgent(LearningAgent):
         self.env.action_space.sample()
         self.state_value[state]
 
-
-
         maxQValue, maxAction = None, None
         for action in self.actions:
           QValue = self.getQValue(state, action)
@@ -175,18 +171,3 @@ class MonteCarloAgent(LearningAgent):
             maxAction = action
         return maxAction
 
-
-
-
-
-"""
-Basic Estimated QLearning (RL2 last thing scott talked about)
-"""
-class ApproximateQLearningAgent(LearningAgent):
-    def __init__(self, game_name, iterations):
-        # instantiate Q values
-        pass
-
-    def train_agent(env):
-        # do the training of the agent here
-        pass

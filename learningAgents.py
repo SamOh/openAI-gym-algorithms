@@ -2,7 +2,6 @@ import gym
 import random
 import utils
 from taxiSearch import solveTaxi
-
 """
 General class to inherit for other learning algo classes
 """
@@ -41,7 +40,7 @@ class RandomAgent(object):
 """
 Agent for Temporal Difference Learning
 """
-class TDLearningAgent(LearningAgent):
+class QLearningAgent(LearningAgent):
     def __init__(self, game_name, iterations, epsilon, gamma, alpha):
         self.env = gym.make(game_name)
         self.epsilon = epsilon
@@ -50,24 +49,6 @@ class TDLearningAgent(LearningAgent):
         self.iterations = iterations
         self.QValues = utils.Counter()
         self.actions = [i for i in range(self.env.action_space.n)]
-
-
-    def random_action(self, env):
-        observation = env.reset()
-        total_reward = 0
-        # print(observation)
-
-        # iterate through specified range and add up the total reward
-        for _ in range(self.iterations):
-            action = self.env.action_space.sample()
-            env.render()
-            # print(action)
-            observation, reward, done, info = self.env.step(action)
-            # print(info)
-            # print(reward)
-            total_reward += reward
-            if done:
-                break
 
     def getQValue(self, state, action):
         return self.QValues[state, action]
@@ -111,7 +92,6 @@ class TDLearningAgent(LearningAgent):
             # print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
     def test_frozen_lake(self):
-        print 'testing TDLearningAgent...'
         rewards, iterations = 0, 1000
         for _ in range(iterations):
             obs, done = self.env.reset(), False
@@ -121,9 +101,7 @@ class TDLearningAgent(LearningAgent):
                 rewards += reward
         print "Percent success rate was {}%".format(rewards*100.0/iterations)
 
-
     def test_taxi(self):
-        print 'testing TDLearningAgent...'
         passed = 0
         for _ in range(self.iterations):
             obs, done, actions = self.env.reset(), False, []
@@ -139,7 +117,7 @@ class TDLearningAgent(LearningAgent):
                     passed += 1
                 if len(actions) < len(optimalActions):
                     print "This is impossible!"
-        print 'Percent success rate was {}%'.format(passed * 100.0 / self.iterations)
+        print 'Percent success rate was {}%'.format(passed*100.0/self.iterations)
 
 """
 TODO
@@ -158,8 +136,7 @@ class MonteCarloAgent(LearningAgent):
     def train_agent(self):
         print 'training MCLearningAgent with {} iterations...'.format(self.iterations)
         for episode in range(self.iterations):
-
-        return
+            return
 
     def initializeRandomPolicy(self):
         self.env.reset()

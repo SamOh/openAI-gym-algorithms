@@ -92,9 +92,6 @@ class QLearningAgent(LearningAgent):
             # print 'training episode gained {} rewards in episode {}'.format(episode_rewards, episode)
 
     def test_frozen_lake(self):
-        print 'testing TDLearningAgent...'
-
-        print 'testing Success Rate...'
         rewards, iterations = 0, 1000
         for _ in range(iterations):
             obs, done = self.env.reset(), False
@@ -105,7 +102,6 @@ class QLearningAgent(LearningAgent):
         print "Percent success rate was {}%".format(rewards*100.0/iterations)
 
     def test_taxi(self):
-        print 'testing TDLearningAgent...'
         passed = 0
         for _ in range(self.iterations):
             obs, done, actions = self.env.reset(), False, []

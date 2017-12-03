@@ -1,10 +1,27 @@
 """
-An MDP model designed for the Open AI gym game, FrozenLake. The game is
-a 4 x 4 grid of ice and holes, which we model with coordinates: (1, 1) at the
-top left (the start state), and (4, 4) at the bottom right.
+A generic MDP class to inherit from.
 """
+class MDP(object):
+  def __init__(self):
+    pass
+  def getStates(self):
+    pass
+  def getActions(self):
+    pass
+  def isTerminal(self, state):
+    pass
+  def getReward(self, state, action, nextState):
+    pass
+  def getTransitionStatesAndProbs(self, state, action):
+    pass
 
-class FrozenLakeMDP(object):
+"""
+An MDP model designed for the Open AI gym game, FrozenLake. The game comes in
+two version: a 4x4 and an 8x8 grid. We model the grid with (x,y) coordinates,
+where (1,1) is at the start state (top left) and the goal state is at the bottom
+right.
+"""
+class FrozenLakeMDP(MDP):
   def __init__(self, maxValue, holes):
     self.max = maxValue
     self.holes = holes
@@ -15,44 +32,26 @@ class FrozenLakeMDP(object):
   def getPos(self, i):
     return ((i % self.max) + 1, (i / self.max) + 1)
 
-  """
-  list of all coordinate points of 4x4 grid
-  """
   def getStates(self):
     return [self.getPos(i) for i in range(self.max * self.max)]
 
-  """
-  FrozenLake has 4 actions: left (0), down (1), right (2), up (3)
-  """
+  # FrozenLake has 4 actions: left (0), down (1), right (2), up (3)
   def getActions(self):
     return [i for i in range(4)]
 
-  """
-  Check to see if a state is a hole
-  """
   def isTerminal(self, state):
     return state in self.holes
 
-  """
-  Goalstate is at bottom right
-  """
   def isGoal(self, state):
     return state == (self.max, self.max)
 
-  """
-  This reward system is consistent with the one specified by open AI
-  (1 point for reaching the goal, otherwise 0 points)
-  """
-  def getReward(self, nextState):
+  # This reward system is consistent with the one specified by open AI
+  def getReward(self, state, action, nextState):
     if self.isGoal(nextState):
       return 1.0
     else:
       return 0.0
 
-  """
-  Gives list of (transition states, probability) from another state, only
-  allowing legal actions
-  """
   def getTransitionStatesAndProbs(self, state, action):
 
     # helper for choosing which [(trans states, probabilities)] given action
@@ -132,3 +131,49 @@ class FrozenLakeMDP(object):
                      [(down, third), (left, third), (right, third)], \
                      [(right, third), (up, third), (down, third)], \
                      [(up, third), (left, third), (right, third)], action)
+
+"""
+An MDP model designed for the Open AI gym game, NChain. The game is
+a linear chain of states with two actions 0 (forward) and 1 (backward).
+"""
+
+class NChainMDP(object):
+  def __init__(self, p, n):
+    self.p = p
+    self.end = n - 1
+
+  def getStates(self):
+    return [i for i in range(5)]
+
+  def getActions(self):
+    return [i for i in range(2)]
+
+  # NChain has no terminal states
+  def isTerminal(self, state):
+    return False
+
+  def getReward(self, state, action, nextState):
+    if action == 1: # going backward
+      if nextState == 0:
+        return 2
+      else:
+        return 0
+    else: # going forward
+      if state == self.end and nextState == self.end:
+        return 10
+      else:
+        return 0
+
+  def getTransitionStatesAndProbs(self, state, action):
+    p, q = self.p, 1 - self.p
+
+    if action == 1: # going backward
+      if state < self.end:
+        return ([(0, p), (state+1, q)])
+      else:
+        return ([(0, p), (state, q)])
+    else: # going forward
+      if state < self.end:
+        return ([(0, q), (state+1, p)])
+      else:
+        return ([(0, q), (state, p)])

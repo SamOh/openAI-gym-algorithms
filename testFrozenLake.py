@@ -12,7 +12,7 @@ print 'Testing FrozenLake 4x4 Grid...\n'
 print 'Testing Q-Learning...\n'
 
 env = gym.make('FrozenLake-v0')
-training_iterations = 5000
+training_iterations = 2000
 testing_iterations = 1000
 holes = {(2,2), (4,2), (4,3), (1,4)}
 

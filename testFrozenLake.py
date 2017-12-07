@@ -3,6 +3,8 @@ from learningAgents import QLearningAgent, FrozenLakeQLAgent, RandomAgent
 from MDP import FrozenLakeMDP
 from valueIterationAgents import FrozenLakeVIAgent
 
+# Actions: left (0), down (1), right (2), up (3)
+
 """
 FrozenLake 4x4 tests
 """

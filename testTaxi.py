@@ -1,6 +1,8 @@
 import gym
 from learningAgents import QLearningAgent, TaxiQLAgent, RandomAgent
 
+# Actions: 3 LEFT, 2 RIGHT, 1 UP, 0 DOWN
+
 env = gym.make('Taxi-v2')
 training_iterations = 2000
 testing_iterations = 1000

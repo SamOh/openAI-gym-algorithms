@@ -3,6 +3,8 @@ from learningAgents import QLearningAgent, RandomAgent
 from valueIterationAgents import NChainVIAgent
 from MDP import NChainMDP
 
+# ACTIONS: 0 forward, 1 backwards
+
 print 'Testing Q-Learning...\n'
 
 env = gym.make('NChain-v0')

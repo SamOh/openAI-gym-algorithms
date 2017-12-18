@@ -31,7 +31,7 @@ def getSuccessors(pos):
     elif y == 2:
       return [d, u]
     else:
-      return [r, d, u]
+      return [r, u, d]
   elif x == 2:
     if y == 5:
       return [l, d]
@@ -129,6 +129,14 @@ def findPickupDropoff(obs):
       return (B, G)
     if ones == 4:
       return (B, Y)
+    if ones == 6:
+      return (None, R)
+    if ones == 7:
+      return (None, G)
+    if ones == 8:
+      return (None, Y)
+    if ones == 9:
+      return (None, B)
   else:
     if ones == 1:
       return (R, G)
@@ -170,10 +178,11 @@ if __name__ == "__main__":
   correct, iterations = 0, 1000
   print "Checking accuracy with {} iterations...".format(iterations)
   for _ in range(iterations):
-    obs = env.reset()
+    obs, rewards = env.reset(), 0
     actions = solveTaxi(obs)
     for action in actions:
-      obs, _, done, _ = env.step(action)
-    if done:
+      obs, reward, done, _ = env.step(action)
+      rewards += reward
+    if done and rewards > 0:
       correct += 1
   print '{}% correct'.format(correct*100.0/iterations)
